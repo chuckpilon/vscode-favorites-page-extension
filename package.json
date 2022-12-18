@@ -1,0 +1,47 @@
+{
+	"name": "custom-welcome-page",
+	"displayName": "Custom Welcome Page",
+	"description": "Customizable Welcome Page that replaces VSCode's Welcome Page",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.73.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onCommand:custom-welcome-page.start"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "custom-welcome-page.start",
+				"title": "Custom Welcome Page"
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "npm run compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/node": "16.11.7",
+		"@types/vscode": "^1.47.0",
+		"@typescript-eslint/eslint-plugin": "^5.42.0",
+		"@typescript-eslint/parser": "^5.42.0",
+		"@vscode/codicons": "0.0.20",
+		"eslint": "^8.26.0",
+		"typescript": "^4.8.4",
+		"@types/glob": "^7.2.0",
+		"@types/mocha": "^9.1.1",
+		"glob": "^8.0.3",
+		"mocha": "^10.0.0",
+		"@vscode/test-electron": "^2.1.5",
+		"@types/vscode-webview": "^1.57.0"
+	}
+}
