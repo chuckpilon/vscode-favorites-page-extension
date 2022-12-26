@@ -12,12 +12,13 @@
 
         let node = event.target;
         while (node) {
-            const xDispatchValue = node.getAttribute('x-dispatch');
-            if (xDispatchValue) {
+            const xDispatch = node.getAttribute('x-dispatch');
+            const xData = node.getAttribute('x-data');
+            if (xDispatch) {
                 vscode.postMessage({
                     command: 'x-dispatch',
-                    xDispatch: xDispatchValue,
-                    data: node.title
+                    xDispatch,
+                    xData,
                 });
                 event.preventDefault();
                 return;

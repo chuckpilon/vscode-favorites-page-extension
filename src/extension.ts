@@ -50,7 +50,7 @@ class CustomWelcomePagePanel {
 				switch (message.command) {
 					case 'x-dispatch':
 						const [ , , command] = message.xDispatch.match(/([^:]+):([^\.]+)$/);
-						this.handleCommand(command, message.data);
+						this.handleCommand(command, message.xData);
 						return;
 
 					case 'alert':
@@ -65,8 +65,9 @@ class CustomWelcomePagePanel {
 
 	private handleCommand(command: string, data: string) {
 		switch (command) {
+			// Unfortunately, commands need to know how to interpret data. For example, converting strings into Uri
 			case 'openFolder':
-				const folderUri = vscode.Uri.parse(data.replace('~/', `${homedir()}/`));
+				const folderUri = vscode.Uri.parse(data);
 				vscode.commands.executeCommand('vscode.openFolder', folderUri);
 				break;
 		}
@@ -254,11 +255,12 @@ class CustomWelcomePagePanel {
 		// <span class="path detail" title="${repository.location}">${repository.location}</span>
 
 		const xDispatch = `customWelcomePage:openFolder`;
+		const xData = repository.location.replace('~/', `${homedir()}/`);
 
 		// onclick is handled by hook in main.js
 		return `
 			<li>
-				<button class="button-link" x-dispatch="${xDispatch}" title="${repository.location}" aria-label="Open folder ${repository.location}">${repository.title}</button>
+				<button class="button-link" x-dispatch="${xDispatch}" x-data="${xData}" title="${repository.location}" aria-label="Open folder ${repository.location}">${repository.title}</button>
 			</li>
 		`;
 	}	
