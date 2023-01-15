@@ -7,7 +7,7 @@ body {
 	background-color: var(--vscode-editor-background);
 }
 
-.custom-welcome-page {
+.welcome-page {
     font-size: 13px;
 }
 
@@ -18,7 +18,7 @@ body {
     line-height: normal;
 }
 
-.custom-welcom-page-container .custom-welcome-page-slide {
+.custom-welcom-page-container .welcome-page-slide {
     overflow: hidden;
     transition: left .25s, opacity .25s;
     padding: 12px 24px;
@@ -30,7 +30,7 @@ body {
     top: 0;
 }
 
-.custom-welcom-page-container .custom-welcome-page-categories-container {
+.custom-welcom-page-container .welcome-page-categories-container {
     grid-template-rows: auto minmax(min-content,auto) min-content;
 
     display: grid;
@@ -71,16 +71,16 @@ body {
     display: block;
 }
 
-.custom-welcome-page-categories-container .categories-column {
+.welcome-page-categories-container .categories-column {
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.custom-welcome-page-categories-container .categories-column-left {
+.welcome-page-categories-container .categories-column-left {
     grid-area: left-column;
 }
 
-.custom-welcome-page-categories-container .categories-column-right {
+.welcome-page-categories-container .categories-column-right {
     grid-area: right-column;
 }
 

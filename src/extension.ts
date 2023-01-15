@@ -49,8 +49,8 @@ class CustomWelcomePagePanel {
 			message => {
 				switch (message.command) {
 					case 'x-dispatch':
-						const [ , , command] = message.xDispatch.match(/([^:]+):([^\.]+)$/);
-						this.handleCommand(command, message.data);
+						const [ , , commandType, command] = message.xDispatch.match(/([^:]+):([^\.]+)\.(.+)$/);
+						this.handleCommand(commandType, command, message.data);
 						return;
 
 					case 'alert':
@@ -63,11 +63,18 @@ class CustomWelcomePagePanel {
 		);
 	}
 
-	private handleCommand(command: string, data: string) {
+	private handleCommand(commandType: string, command: string, data: string) {
 		switch (command) {
 			case 'openFolder':
+				// TODO: [main] Move this to html creation
 				const folderUri = vscode.Uri.parse(data.replace('~/', `${homedir()}/`));
 				vscode.commands.executeCommand('vscode.openFolder', folderUri);
+				break;
+			case 'showNewFileEntries':
+				vscode.commands.executeCommand('welcome.showNewFileEntries');
+				break;
+			case 'topLevelOpenMac':
+				vscode.commands.executeCommand('workbench.action.files.openFile');
 				break;
 		}
 	}
@@ -93,7 +100,7 @@ class CustomWelcomePagePanel {
 	}
 
 	public static createOrShow(extensionUri: vscode.Uri) {
-		const settings: Settings = vscode.workspace.getConfiguration().get('custom-welcome-page') || defaultSettings;
+		const settings: Settings = vscode.workspace.getConfiguration().get('welcome-page') || defaultSettings;
 
 		const column = vscode.window.activeTextEditor
 			? vscode.window.activeTextEditor.viewColumn
@@ -190,10 +197,10 @@ class CustomWelcomePagePanel {
 
 		const bodyHtml = `
 			<body>
-				<div class="custom-welcome-page">
+				<div class="welcome-page">
 					<div class="custom-welcom-page-container">
-						<div class="custom-welcome-page-slide">
-							<div class="custom-welcome-page-categories-container">
+						<div class="welcome-page-slide">
+							<div class="welcome-page-categories-container">
 								${headerHtml}
 								${startHtml}
 								${repositoryGroupsHtml}
@@ -253,7 +260,7 @@ class CustomWelcomePagePanel {
 		// Standard welcome page has the location. It doesn't seem appealing to me.
 		// <span class="path detail" title="${repository.location}">${repository.location}</span>
 
-		const xDispatch = `customWelcomePage:openFolder`;
+		const xDispatch = `customWelcomePage:repository.openFolder`;
 
 		// onclick is handled by hook in main.js
 		return `
@@ -277,7 +284,7 @@ class CustomWelcomePagePanel {
 							</button>
 						</li>
 						<li>
-							<button class="button-link" x-dispatch="selectStartEntry:topLevelOpenMac" title="Open a file or folder to start working (⌘O)">
+							<button class="button-link" x-dispatch="selectStartEntry:welcome.topLevelOpenMac" title="Open a file or folder to start working (⌘O)">
 								<div class="codicon codicon-folder-opened icon-widget"></div>
 								<span>Open...</span>
 							</button>
@@ -302,10 +309,14 @@ class CustomWelcomePagePanel {
 
 export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
-		vscode.commands.registerCommand('custom-welcome-page.start', () => {
+		vscode.commands.registerCommand('welcome-page.start', () => {
 			CustomWelcomePagePanel.createOrShow(context.extensionUri);
 		})
 	);
+	// TODO: [main] Only if no directory loaded
+	if (vscode.workspace.workspaceFolders === undefined) {
+		CustomWelcomePagePanel.createOrShow(context.extensionUri);
+	}
 }
 
 // this method is called when your extension is deactivated
