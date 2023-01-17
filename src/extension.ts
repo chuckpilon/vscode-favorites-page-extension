@@ -5,9 +5,9 @@ const defaultSettings: Settings = {
 	panel: {
 		title: 'Welcome',
 	},
-	productName: 'Visual Studio Code',
-	tagLine: 'Editing evolved',
-	groups: []
+	title: 'Visual Studio Code',
+	subtitle: 'Editing evolved',
+	folderGroups: []
 };
 
 class CustomWelcomePagePanel {
@@ -17,14 +17,14 @@ class CustomWelcomePagePanel {
 	private readonly _panel!: vscode.WebviewPanel;
 	private readonly _extensionUri: vscode.Uri;
 	private readonly _settings: Settings;
-	private readonly repositoryGroups: RepositoryGroup[];
+	private readonly repositoryGroups: FolderGroup[];
 	private _disposables: vscode.Disposable[] = [];
 
 	private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, settings: Settings) {
 		this._panel = panel;
 		this._extensionUri = extensionUri;
 		this._settings = settings;
-		this.repositoryGroups = this._settings.groups;
+		this.repositoryGroups = this._settings.folderGroups;
 
 		// Set the webview's initial html content
 		this._update();
@@ -100,7 +100,7 @@ class CustomWelcomePagePanel {
 	}
 
 	public static createOrShow(extensionUri: vscode.Uri) {
-		const settings: Settings = vscode.workspace.getConfiguration().get('welcome-page') || defaultSettings;
+		const settings: Settings = vscode.workspace.getConfiguration().get('welcomePage') || defaultSettings;
 
 		const column = vscode.window.activeTextEditor
 			? vscode.window.activeTextEditor.viewColumn
@@ -115,7 +115,7 @@ class CustomWelcomePagePanel {
 		// Otherwise, create a new panel.
 		const panel = vscode.window.createWebviewPanel(
 			CustomWelcomePagePanel.viewType,
-			'Custom Welcome Page',
+			'Welcome Page',
 			column || vscode.ViewColumn.One,
 			this.getWebviewOptions(extensionUri, settings),
 		);
@@ -186,8 +186,8 @@ class CustomWelcomePagePanel {
 
 		const headerHtml = `
 			<div class="header">
-				<h1 class="product-name caption">${this._settings.productName}</h1>
-				<p class="subtitle description">${this._settings.tagLine}</p>
+				<h1 class="product-name caption">${this._settings.title}</h1>
+				<p class="subtitle description">${this._settings.subtitle}</p>
 			</div>`;
 		const startHtml = this.getHtmlForStart();
 		const repositoryGroupsHtml = this.getHtmlForRepositoryGroups(this.repositoryGroups);
@@ -198,7 +198,7 @@ class CustomWelcomePagePanel {
 		const bodyHtml = `
 			<body>
 				<div class="welcome-page">
-					<div class="custom-welcom-page-container">
+					<div class="welcome-page-container">
 						<div class="welcome-page-slide">
 							<div class="welcome-page-categories-container">
 								${headerHtml}
@@ -222,7 +222,7 @@ class CustomWelcomePagePanel {
 		`;
 	}
 
-	private getHtmlForRepositoryGroups(repositoryGroups: RepositoryGroup[]): string {
+	private getHtmlForRepositoryGroups(repositoryGroups: FolderGroup[]): string {
 		return `
 			<div class="categories-column categories-column-right">
 				<div class="index-list start-container">
@@ -232,8 +232,8 @@ class CustomWelcomePagePanel {
 			</div>`;
 	}
 
-	private htmlForRepositoryGroup(group: RepositoryGroup): string {
-		const repositoriesHtml = group.repositories.map(repository => this.htmlForRepository(repository)).join('\n');
+	private htmlForRepositoryGroup(group: FolderGroup): string {
+		const foldersHtml = group.folders.map(repository => this.htmlForRepository(repository)).join('\n');
 		const localImgHtml = group.iconPath
 			? `<img src="${this.pathAsWebviewUri(group.iconPath)}"></img>`
 			: '';
@@ -241,7 +241,7 @@ class CustomWelcomePagePanel {
 			${localImgHtml}
 			<h3>${group.title}</h3>
 			<ul>
-			${repositoriesHtml}
+			${foldersHtml}
 			</ul>
 			`;
 	}
@@ -256,7 +256,7 @@ class CustomWelcomePagePanel {
 		return webViewUri;
 	}
 	
-	private htmlForRepository(repository: Repository): string {
+	private htmlForRepository(repository: Folder): string {
 		// Standard welcome page has the location. It doesn't seem appealing to me.
 		// <span class="path detail" title="${repository.location}">${repository.location}</span>
 
@@ -265,7 +265,7 @@ class CustomWelcomePagePanel {
 		// onclick is handled by hook in main.js
 		return `
 			<li>
-				<button class="button-link" x-dispatch="${xDispatch}" title="${repository.location}" aria-label="Open folder ${repository.location}">${repository.title}</button>
+				<button class="button-link" x-dispatch="${xDispatch}" title="${repository.location}" aria-label="Open folder ${repository.location}">${repository.description}</button>
 			</li>
 		`;
 	}	

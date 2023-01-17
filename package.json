@@ -20,16 +20,44 @@
 		"commands": [
 			{
 				"command": "welcome-page.start",
-				"title": "Custom Welcome Page"
+				"title": "Welcome Page"
 			}
-		]
+		],
+		"configuration": {
+			"title": "Welcome Page",
+			"properties": {
+				"welcomePage": {
+					"type": "object",
+					"description": "Configuration structure of the Welcome Page. See README.md."
+				},
+				"welcomePage.panel.title": {
+					"type": "string",
+					"description": "Tab text for Welcome Page",
+					"default": "Welcome"
+				},
+				"welcomePage.title": {
+					"type": "string",
+					"description": "Title text of Welcome Page",
+					"default": "Visual Studio Code"
+				},
+				"welcomePage.subtitle": {
+					"type": "string",
+					"description": "Subtitle text of Welcome Page",
+					"default": "Editing evolved"
+				},
+				"welcomePage.resourceDirectory": {
+					"type": "string",
+					"description": "Directory of resources that can be accessed by the Welcome Page extension"
+				}
+			}
+		}
 	},
 	"activationEvents": [
 		"*"
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/chuckpilon/custom-welcome-page"
+		"url": "https://github.com/chuckpilon/vscode-welcome-page-extension"
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
@@ -37,7 +65,8 @@
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
+		"test": "node ./out/test/runTest.js",
+		"package": "echo y | vsce package"
 	},
 	"devDependencies": {
 		"@types/node": "16.11.7",

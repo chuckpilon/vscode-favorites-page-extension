@@ -11,14 +11,14 @@ body {
     font-size: 13px;
 }
 
-.custom-welcom-page-container {
+.welcome-page-container {
     font-weight: 400;
     margin-top: 0;
     margin-bottom: 5px;
     line-height: normal;
 }
 
-.custom-welcom-page-container .welcome-page-slide {
+.welcome-page-container .welcome-page-slide {
     overflow: hidden;
     transition: left .25s, opacity .25s;
     padding: 12px 24px;
@@ -30,7 +30,7 @@ body {
     top: 0;
 }
 
-.custom-welcom-page-container .welcome-page-categories-container {
+.welcome-page-container .welcome-page-categories-container {
     grid-template-rows: auto minmax(min-content,auto) min-content;
 
     display: grid;
@@ -45,13 +45,13 @@ body {
         ". footer footer footer .";    
 }
 
-.custom-welcom-page-container .header {
+.welcome-page-container .header {
     grid-area: header;
     align-self: end;
     padding-bottom: 12px;
 }
 
-.custom-welcom-page-container .header h1 {
+.welcome-page-container .header h1 {
     padding: 5px 0 0;
     margin: 0;
     border: none;
@@ -60,12 +60,12 @@ body {
     white-space: nowrap;    
 }
 
-.custom-welcom-page-container .header .description {
+.welcome-page-container .header .description {
     color: #717171;
     line-height: 1.4em;
 }
 
-.custom-welcom-page-container .header .subtitle {
+.welcome-page-container .header .subtitle {
     margin-top: 0.6em;
     font-size: 2em;
     display: block;
@@ -92,7 +92,7 @@ body {
     padding: 4px 0;
 }
 
-.custom-welcom-page-container ul {
+.welcome-page-container ul {
     list-style: none;
     margin: 0;
     line-height: 24px;
@@ -100,21 +100,21 @@ body {
     overflow: hidden;
 }
 
-.custom-welcom-page-container li {
+.welcome-page-container li {
     list-style: none;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;    
 }
 
-.custom-welcom-page-container button {
+.welcome-page-container button {
     color: #006ab1;
     text-align: left;
     font-size: 13px;
     font-family: inherit;    
 }
 
-.custom-welcom-page-container .button-link {
+.welcome-page-container .button-link {
     padding: 0;
     background: transparent;
     margin: 2px;
@@ -124,11 +124,11 @@ body {
     max-width: max-content;
 }
 
-.custom-welcom-page-container path {
+.welcome-page-container path {
     padding-left: 1em;
 }
 
-.custom-welcom-page-container .footer {
+.welcome-page-container .footer {
     grid-area: footer;
     justify-self: center;
     text-align: center;

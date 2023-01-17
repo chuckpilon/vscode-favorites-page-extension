@@ -1,15 +1,14 @@
-type Repository = {
+type Folder = {
 	id: string,
-	title: string,
 	description: string,
 	location: string
 };
 
-type RepositoryGroup = {
+type FolderGroup = {
 	id: string,
 	title: string,
 	iconPath?: string,
-	repositories: Array<Repository> 
+	folders: Array<Folder> 
 };
 
 type Settings = {
@@ -17,9 +16,9 @@ type Settings = {
 		title: string,
 		iconPath?: string,
 	},
-	productName: string,
-	tagLine: string,
+	title: string,
+	subtitle: string,
 	resourceDirectory?: string;
-	groups: Array<RepositoryGroup>
+	folderGroups: Array<FolderGroup>
 };
 

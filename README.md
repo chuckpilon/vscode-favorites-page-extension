@@ -1,6 +1,6 @@
-# Custom Welcome Page
+# Welcome Page
 
-Custom Welcome Page replaces Visual Studio Code's Get Started page.
+Welcome Page replaces Visual Studio Code's Get Started page. Welcome page always displays a configurable list of projects instead of recent projects as on the Get Started page.
 
 ## Features
 
@@ -18,14 +18,44 @@ If you have any requirements or dependencies, add a section describing those and
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
 This extension contributes the following settings:
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+* `welcomePage`: Define the layout
+* `welcomePage.panel`: Define the tab
+* `welcomePage.panel.title`: Text for the tab
+* `welcomePage.title`: Title text
+* `welcomePage.subtitle`: Subtitle text
+* `welcomePage.folderGroups`: Groups of folders
+* `welcomePage.folderGroups[].id`: Unique Id for the folder group
+* `welcomePage.folderGroups[].title`: Text for the folder group
+* `welcomePage.folderGroups[].folders`: Folders within the folder group
+* `welcomePage.folderGroups[].folders[].id`: Unique Id for the folder
+* `welcomePage.folderGroups[].folders[].description`: Repository text
+* `welcomePage.folderGroups[].folders[].location`: Path of the repository
+
+```
+"welcomePage": {
+    "panel": {
+        "title": "Welcome"
+    },
+    "title": "Visual Studio Code",
+    "subtitle": "Editing evolved",
+    "folderGroups": [
+        {
+            "id": "group1",
+            "title": "Group 1",
+            "folders": [
+                {
+                    "id": "group-1-project-1",
+                    "description": "Group 1 Project 1",
+                    "location": "~/code/group1/project1"
+                },
+                ...
+            ]
+        },
+        ...
+    ],
+```
 
 ## Known Issues
 
@@ -37,5 +67,5 @@ Users appreciate release notes as you update your extension.
 
 ### 1.0.0
 
-Initial release of Custom Welcome Page
+Initial release of Welcome Page
 
