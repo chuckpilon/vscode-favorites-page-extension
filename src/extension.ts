@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import axios from 'axios';
 import { homedir } from 'os';
 
 const defaultSettings: Settings = {
@@ -20,11 +21,11 @@ class CustomWelcomePagePanel {
 	private readonly repositoryGroups: FolderGroup[];
 	private _disposables: vscode.Disposable[] = [];
 
-	private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, settings: Settings) {
+	private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, settings: Settings, folderGroups: Array<FolderGroup>) {
 		this._panel = panel;
 		this._extensionUri = extensionUri;
 		this._settings = settings;
-		this.repositoryGroups = this._settings.folderGroups;
+		this.repositoryGroups = folderGroups;
 
 		// Set the webview's initial html content
 		this._update();
@@ -66,8 +67,8 @@ class CustomWelcomePagePanel {
 	private handleCommand(commandType: string, command: string, data: string) {
 		switch (command) {
 			case 'openFolder':
-				// TODO: [main] Move this to html creation
-				const folderUri = vscode.Uri.parse(data.replace('~/', `${homedir()}/`));
+				// TODO: Move this to html creation
+				const folderUri = vscode.Uri.parse(data);
 				vscode.commands.executeCommand('vscode.openFolder', folderUri);
 				break;
 			case 'showNewFileEntries':
@@ -93,14 +94,81 @@ class CustomWelcomePagePanel {
 				vscode.Uri.joinPath(extensionUri, 'media'),
 				vscode.Uri.joinPath(extensionUri, 'node_modules', '@vscode/codicons', 'dist'),
 				vscode.Uri.joinPath(extensionUri, 'node_modules/'),
-				// TODO: [main] What if it's really null?
+				// TODO: What if it's really null?
 				vscode.Uri.file(settings.resourceDirectory!)
 			]
 		};
 	}
 
-	public static createOrShow(extensionUri: vscode.Uri) {
+	private static async _getGitLabFavorites(gitLabSettings: GitLabSettings) : Promise<Array<FolderGroup>> {
+		try {
+			const response = await axios.get(gitLabSettings.url, {
+				headers: {'PRIVATE-TOKEN': gitLabSettings.privateToken}
+			});
+			const projects: Array<GitLabProject> = response.data;
+
+			// FolderGroup for each unique namespace
+			const folderGroups: FolderGroup[] = projects.map(project => {
+				return {
+					id: project.namespace.id.toString(),
+					name: project.namespace.name,
+					fullPath: project.namespace.full_path
+				};
+			}).filter((namespace, index, namespaces) => {
+				return namespaces.findIndex((findNamespace) => { 
+					return findNamespace.id === namespace.id;
+				}) === index;
+			}).sort((namespace1, namespace2) => {
+				return namespace1.name.localeCompare(namespace2.name);
+			}).map(namespace => {
+				const title = Object.entries(gitLabSettings.renameGroups).reduce((namespaceName, [key, value]) => {
+					return namespaceName.replace(key, value);
+				}, namespace.name);
+
+				return {
+					id: namespace.id.toString(),
+					title: title,
+					folders: []
+				};
+			});
+
+			// Add each project to its FolderGroup
+			projects.forEach(project => {
+				const folderGroup = folderGroups.find((folderGroup: FolderGroup, index: number, folderGroups: FolderGroup[]) => {
+					return project.namespace.id.toString() === folderGroup.id;
+				});
+				if (folderGroup) {
+					// Construct local path using localRootPath and renamePaths
+					const location = Object.entries(gitLabSettings.renamePaths).reduce((pathWithNamespace, [key, value]) => {
+						return pathWithNamespace.replace(key, value);
+					}, project.path_with_namespace);
+	
+
+					const folder: Folder = {
+						id: project.id.toString(),
+						description: project.name,
+						location: gitLabSettings.localRootPath + location
+					};
+					folderGroup.folders.push(folder);
+				}
+			});
+
+			return folderGroups;
+		} catch (error) {
+			console.error(error);
+			return [];
+		}
+	}
+
+	public static async createOrShow(extensionUri: vscode.Uri) {
 		const settings: Settings = vscode.workspace.getConfiguration().get('welcomePage') || defaultSettings;
+		const folderGroups = JSON.parse(JSON.stringify(settings.folderGroups));
+
+		// Read GitLab if configured
+		if (settings.gitLab) {
+			const gitLabFavorites = await CustomWelcomePagePanel._getGitLabFavorites(settings.gitLab);
+			folderGroups.push(...gitLabFavorites);
+		}
 
 		const column = vscode.window.activeTextEditor
 			? vscode.window.activeTextEditor.viewColumn
@@ -120,7 +188,7 @@ class CustomWelcomePagePanel {
 			this.getWebviewOptions(extensionUri, settings),
 		);
 
-		CustomWelcomePagePanel.currentPanel = new CustomWelcomePagePanel(panel, extensionUri, settings);
+		CustomWelcomePagePanel.currentPanel = new CustomWelcomePagePanel(panel, extensionUri, settings, folderGroups);
 	}
 
 	public dispose() {
@@ -313,7 +381,7 @@ export function activate(context: vscode.ExtensionContext) {
 			CustomWelcomePagePanel.createOrShow(context.extensionUri);
 		})
 	);
-	// TODO: [main] Only if no directory loaded
+	// TODO: Only if no directory loaded
 	if (vscode.workspace.workspaceFolders === undefined) {
 		CustomWelcomePagePanel.createOrShow(context.extensionUri);
 	}
