@@ -7,18 +7,18 @@ body {
 	background-color: var(--vscode-editor-background);
 }
 
-.welcome-page {
+.favorites-page {
     font-size: 13px;
 }
 
-.welcome-page-container {
+.favorites-page-container {
     font-weight: 400;
     margin-top: 0;
     margin-bottom: 5px;
     line-height: normal;
 }
 
-.welcome-page-container .welcome-page-slide {
+.favorites-page-container .favorites-page-slide {
     overflow: hidden;
     transition: left .25s, opacity .25s;
     padding: 12px 24px;
@@ -30,7 +30,7 @@ body {
     top: 0;
 }
 
-.welcome-page-container .welcome-page-categories-container {
+.favorites-page-container .favorites-page-categories-container {
     grid-template-rows: auto minmax(min-content,auto) min-content;
 
     display: grid;
@@ -45,13 +45,13 @@ body {
         ". footer footer footer .";    
 }
 
-.welcome-page-container .header {
+.favorites-page-container .header {
     grid-area: header;
     align-self: end;
     padding-bottom: 12px;
 }
 
-.welcome-page-container .header h1 {
+.favorites-page-container .header h1 {
     padding: 5px 0 0;
     margin: 0;
     border: none;
@@ -60,27 +60,27 @@ body {
     white-space: nowrap;    
 }
 
-.welcome-page-container .header .description {
+.favorites-page-container .header .description {
     color: #717171;
     line-height: 1.4em;
 }
 
-.welcome-page-container .header .subtitle {
+.favorites-page-container .header .subtitle {
     margin-top: 0.6em;
     font-size: 2em;
     display: block;
 }
 
-.welcome-page-categories-container .categories-column {
+.favorites-page-categories-container .categories-column {
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.welcome-page-categories-container .categories-column-left {
+.favorites-page-categories-container .categories-column-left {
     grid-area: left-column;
 }
 
-.welcome-page-categories-container .categories-column-right {
+.favorites-page-categories-container .categories-column-right {
     grid-area: right-column;
 }
 
@@ -92,7 +92,7 @@ body {
     padding: 4px 0;
 }
 
-.welcome-page-container ul {
+.favorites-page-container ul {
     list-style: none;
     margin: 0;
     line-height: 24px;
@@ -100,21 +100,21 @@ body {
     overflow: hidden;
 }
 
-.welcome-page-container li {
+.favorites-page-container li {
     list-style: none;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;    
 }
 
-.welcome-page-container button {
+.favorites-page-container button {
     color: #006ab1;
     text-align: left;
     font-size: 13px;
     font-family: inherit;    
 }
 
-.welcome-page-container .button-link {
+.favorites-page-container .button-link {
     padding: 0;
     background: transparent;
     margin: 2px;
@@ -124,11 +124,11 @@ body {
     max-width: max-content;
 }
 
-.welcome-page-container path {
+.favorites-page-container path {
     padding-left: 1em;
 }
 
-.welcome-page-container .footer {
+.favorites-page-container .footer {
     grid-area: footer;
     justify-self: center;
     text-align: center;
