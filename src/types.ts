@@ -21,13 +21,11 @@ type GitLabSettings = {
 
 type Settings = {
 	panel: {
-		title: string,
-		iconPath?: string,
+		title: string
 	},
 	gitLab?: GitLabSettings;
 	title: string,
 	subtitle: string,
-	resourceDirectory?: string;
 	folderGroups: Array<FolderGroup>
 };
 

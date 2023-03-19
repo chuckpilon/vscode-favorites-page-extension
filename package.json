@@ -1,53 +1,51 @@
 {
-	"name": "welcome-page",
+	"name": "favorites-page",
 	"version": "1.0.0",
 	"publisher": "Chuck Pilon",
 	"engines": {
 		"vscode": "^1.73.0"
 	},
 	"license": "SEE LICENSE IN LICENSE.md",
-	"displayName": "Welcome Page",
-	"description": "Customizable Welcome Page that replaces VSCode's Welcome Page",
+	"displayName": "Favorites Page",
+	"description": "Customizable Favorites Page similar to VSCode's Welcome Page",
 	"categories": [
 		"Other"
 	],
 	"keywords": [
-		"welcome",
+		"favorites",
+		"favorites",
+		"gitlab",
 		"startup"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "welcome-page.start",
-				"title": "Welcome Page"
+				"command": "favorites-page.start",
+				"title": "Favorites Page"
 			}
 		],
 		"configuration": {
-			"title": "Welcome Page",
+			"title": "Favorites Page",
 			"properties": {
-				"welcomePage": {
+				"favoritesPage": {
 					"type": "object",
-					"description": "Configuration structure of the Welcome Page. See README.md."
+					"description": "Configuration structure of the Favorites Page. See README.md."
 				},
-				"welcomePage.panel.title": {
+				"favoritesPage.panel.title": {
 					"type": "string",
-					"description": "Tab text for Welcome Page",
-					"default": "Welcome"
+					"description": "Tab text for Favorites Page",
+					"default": "Favorites"
 				},
-				"welcomePage.title": {
+				"favoritesPage.title": {
 					"type": "string",
-					"description": "Title text of Welcome Page",
+					"description": "Title text of Favorites Page",
 					"default": "Visual Studio Code"
 				},
-				"welcomePage.subtitle": {
+				"favoritesPage.subtitle": {
 					"type": "string",
-					"description": "Subtitle text of Welcome Page",
+					"description": "Subtitle text of Favorites Page",
 					"default": "Editing evolved"
-				},
-				"welcomePage.resourceDirectory": {
-					"type": "string",
-					"description": "Directory of resources that can be accessed by the Welcome Page extension"
 				}
 			}
 		}
@@ -57,7 +55,7 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/chuckpilon/vscode-welcome-page-extension"
+		"url": "https://github.com/chuckpilon/vscode-favorites-page-extension"
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

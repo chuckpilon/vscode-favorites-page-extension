@@ -1,6 +1,6 @@
-# Welcome Page
+# Favorites Page
 
-Welcome Page replaces Visual Studio Code's Get Started page. Welcome page always displays a configurable list of projects instead of recent projects as on the Get Started page.
+Favorites Page replaces Visual Studio Code's Get Started page. Favorites page always displays a configurable list of projects instead of recent projects as on the Get Started page.
 
 ## Features
 
@@ -20,23 +20,23 @@ If you have any requirements or dependencies, add a section describing those and
 
 This extension contributes the following settings:
 
-* `welcomePage`: Define the layout
-* `welcomePage.panel`: Define the tab
-* `welcomePage.panel.title`: Text for the tab
-* `welcomePage.title`: Title text
-* `welcomePage.subtitle`: Subtitle text
-* `welcomePage.folderGroups`: Groups of folders
-* `welcomePage.folderGroups[].id`: Unique Id for the folder group
-* `welcomePage.folderGroups[].title`: Text for the folder group
-* `welcomePage.folderGroups[].folders`: Folders within the folder group
-* `welcomePage.folderGroups[].folders[].id`: Unique Id for the folder
-* `welcomePage.folderGroups[].folders[].description`: Repository text
-* `welcomePage.folderGroups[].folders[].location`: Path of the repository
+* `favoritesPage`: Define the layout
+* `favoritesPage.panel`: Define the tab
+* `favoritesPage.panel.title`: Text for the tab
+* `favoritesPage.title`: Title text
+* `favoritesPage.subtitle`: Subtitle text
+* `favoritesPage.folderGroups`: Groups of folders
+* `favoritesPage.folderGroups[].id`: Unique Id for the folder group
+* `favoritesPage.folderGroups[].title`: Text for the folder group
+* `favoritesPage.folderGroups[].folders`: Folders within the folder group
+* `favoritesPage.folderGroups[].folders[].id`: Unique Id for the folder
+* `favoritesPage.folderGroups[].folders[].description`: Repository text
+* `favoritesPage.folderGroups[].folders[].location`: Path of the repository
 
 ```
-"welcomePage": {
+"favoritesPage": {
     "panel": {
-        "title": "Welcome"
+        "title": "Favorites"
     },
     "title": "Visual Studio Code",
     "subtitle": "Editing evolved",
@@ -67,5 +67,5 @@ Users appreciate release notes as you update your extension.
 
 ### 1.0.0
 
-Initial release of Welcome Page
+Initial release of Favorites Page
 

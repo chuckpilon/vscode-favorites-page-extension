@@ -1,19 +1,19 @@
 import * as vscode from 'vscode';
 import axios from 'axios';
-import { homedir } from 'os';
+import { Uri } from 'vscode';
 
 const defaultSettings: Settings = {
 	panel: {
-		title: 'Welcome',
+		title: 'Favorites',
 	},
 	title: 'Visual Studio Code',
 	subtitle: 'Editing evolved',
 	folderGroups: []
 };
 
-class CustomWelcomePagePanel {
-	public static currentPanel: CustomWelcomePagePanel | undefined;
-	public static readonly viewType = 'customWelcomePage';
+class FavoritesPagePanel {
+	public static currentPanel: FavoritesPagePanel | undefined;
+	public static readonly viewType = 'customFavoritesPage';
 
 	private readonly _panel!: vscode.WebviewPanel;
 	private readonly _extensionUri: vscode.Uri;
@@ -21,14 +21,18 @@ class CustomWelcomePagePanel {
 	private readonly repositoryGroups: FolderGroup[];
 	private _disposables: vscode.Disposable[] = [];
 
-	private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, settings: Settings, folderGroups: Array<FolderGroup>) {
+	private constructor(panel: vscode.WebviewPanel, 
+			extensionUri: vscode.Uri, 
+			settings: Settings, 
+			folderGroups: Array<FolderGroup>,
+			context: vscode.ExtensionContext) {
 		this._panel = panel;
 		this._extensionUri = extensionUri;
 		this._settings = settings;
 		this.repositoryGroups = folderGroups;
 
 		// Set the webview's initial html content
-		this._update();
+		this._update(context);
 
 		// Listen for when the panel is disposed
 		// This happens when the user closes the panel or when the panel is closed programmatically
@@ -38,7 +42,7 @@ class CustomWelcomePagePanel {
 		this._panel.onDidChangeViewState(
 			event => {
 				if (this._panel.visible) {
-					this._update();
+					this._update(context);
 				}
 			},
 			null,
@@ -72,7 +76,7 @@ class CustomWelcomePagePanel {
 				vscode.commands.executeCommand('vscode.openFolder', folderUri);
 				break;
 			case 'showNewFileEntries':
-				vscode.commands.executeCommand('welcome.showNewFileEntries');
+				vscode.commands.executeCommand('favorites.showNewFileEntries');
 				break;
 			case 'topLevelOpenMac':
 				vscode.commands.executeCommand('workbench.action.files.openFile');
@@ -82,7 +86,7 @@ class CustomWelcomePagePanel {
 
 	/**
 	 * Enable javascript in the webview and restrict the webview to only loading content from our 
-	 * extension's `media` directory and the configured resourceDirectory.
+	 * extension's `media` directory.
 	 * 
 	 * @param extensionUri 
 	 * @param settings 
@@ -93,9 +97,7 @@ class CustomWelcomePagePanel {
 			localResourceRoots: [
 				vscode.Uri.joinPath(extensionUri, 'media'),
 				vscode.Uri.joinPath(extensionUri, 'node_modules', '@vscode/codicons', 'dist'),
-				vscode.Uri.joinPath(extensionUri, 'node_modules/'),
-				// TODO: What if it's really null?
-				vscode.Uri.file(settings.resourceDirectory!)
+				vscode.Uri.joinPath(extensionUri, 'node_modules/')
 			]
 		};
 	}
@@ -160,13 +162,13 @@ class CustomWelcomePagePanel {
 		}
 	}
 
-	public static async createOrShow(extensionUri: vscode.Uri) {
-		const settings: Settings = vscode.workspace.getConfiguration().get('welcomePage') || defaultSettings;
+	public static async createOrShow(extensionUri: vscode.Uri, context: vscode.ExtensionContext) {
+		const settings: Settings = vscode.workspace.getConfiguration().get('favoritesPage') || defaultSettings;
 		const folderGroups = JSON.parse(JSON.stringify(settings.folderGroups));
 
 		// Read GitLab if configured
 		if (settings.gitLab) {
-			const gitLabFavorites = await CustomWelcomePagePanel._getGitLabFavorites(settings.gitLab);
+			const gitLabFavorites = await FavoritesPagePanel._getGitLabFavorites(settings.gitLab);
 			folderGroups.push(...gitLabFavorites);
 		}
 
@@ -175,24 +177,24 @@ class CustomWelcomePagePanel {
 			: undefined;
 
 		// If we already have a panel, show it.
-		if (CustomWelcomePagePanel.currentPanel) {
-			CustomWelcomePagePanel.currentPanel._panel.reveal(column);
+		if (FavoritesPagePanel.currentPanel) {
+			FavoritesPagePanel.currentPanel._panel.reveal(column);
 			return;
 		}
 
 		// Otherwise, create a new panel.
 		const panel = vscode.window.createWebviewPanel(
-			CustomWelcomePagePanel.viewType,
-			'Welcome Page',
+			FavoritesPagePanel.viewType,
+			'Favorites Page',
 			column || vscode.ViewColumn.One,
 			this.getWebviewOptions(extensionUri, settings),
 		);
 
-		CustomWelcomePagePanel.currentPanel = new CustomWelcomePagePanel(panel, extensionUri, settings, folderGroups);
+		FavoritesPagePanel.currentPanel = new FavoritesPagePanel(panel, extensionUri, settings, folderGroups, context);
 	}
 
 	public dispose() {
-		CustomWelcomePagePanel.currentPanel = undefined;
+		FavoritesPagePanel.currentPanel = undefined;
 
 		// Clean up our resources
 		this._panel.dispose();
@@ -205,9 +207,9 @@ class CustomWelcomePagePanel {
 		}
 	}
 
-	private _update() {
+	private _update(context: vscode.ExtensionContext) {
 		this._panel.title = this._settings.panel.title;
-		this._panel.iconPath = this._settings.panel.iconPath ? vscode.Uri.parse(this._settings.panel.iconPath) : undefined;
+		this._panel.iconPath = Uri.file(context.asAbsolutePath("media/vscode-favicon.ico"));
 		this._panel.webview.html = this._getHtmlForWebview();
 	}
 
@@ -265,10 +267,10 @@ class CustomWelcomePagePanel {
 
 		const bodyHtml = `
 			<body>
-				<div class="welcome-page">
-					<div class="welcome-page-container">
-						<div class="welcome-page-slide">
-							<div class="welcome-page-categories-container">
+				<div class="favorites-page">
+					<div class="favorites-page-container">
+						<div class="favorites-page-slide">
+							<div class="favorites-page-categories-container">
 								${headerHtml}
 								${startHtml}
 								${repositoryGroupsHtml}
@@ -316,19 +318,19 @@ class CustomWelcomePagePanel {
 	
 	private pathAsWebviewUri(path: string): vscode.Uri {
 		let uri = vscode.Uri.parse(path);
-		if (uri.scheme === 'file') {
-			uri = vscode.Uri.parse(`${this._settings.resourceDirectory}/${path}`);
-		}
+		// if (uri.scheme === 'file') {
+		// 	uri = vscode.Uri.parse(`${this._settings.resourceDirectory}/${path}`);
+		// }
 		const webview = this._panel.webview;
 		const webViewUri = webview.asWebviewUri(uri);
 		return webViewUri;
 	}
 	
 	private htmlForRepository(repository: Folder): string {
-		// Standard welcome page has the location. It doesn't seem appealing to me.
+		// Standard favorites page has the location. It doesn't seem appealing to me.
 		// <span class="path detail" title="${repository.location}">${repository.location}</span>
 
-		const xDispatch = `customWelcomePage:repository.openFolder`;
+		const xDispatch = `customFavoritesPage:repository.openFolder`;
 
 		// onclick is handled by hook in main.js
 		return `
@@ -346,13 +348,13 @@ class CustomWelcomePagePanel {
 					<ul style="overflow: hidden;">
 						<li>
 							<!-- is x-dispatch how vscode handles the messaging of commands? -->
-							<button class="button-link" x-dispatch="selectStartEntry:welcome.showNewFileEntries" title="Open a new untitled file, notebook, or custom editor. (⌃⌥⌘N)">
+							<button class="button-link" x-dispatch="selectStartEntry:favorites.showNewFileEntries" title="Open a new untitled file, notebook, or custom editor. (⌃⌥⌘N)">
 								<div class="codicon codicon-new-file icon-widget"></div>
 								<span>New File...</span>
 							</button>
 						</li>
 						<li>
-							<button class="button-link" x-dispatch="selectStartEntry:welcome.topLevelOpenMac" title="Open a file or folder to start working (⌘O)">
+							<button class="button-link" x-dispatch="selectStartEntry:favorites.topLevelOpenMac" title="Open a file or folder to start working (⌘O)">
 								<div class="codicon codicon-folder-opened icon-widget"></div>
 								<span>Open...</span>
 							</button>
@@ -377,13 +379,13 @@ class CustomWelcomePagePanel {
 
 export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
-		vscode.commands.registerCommand('welcome-page.start', () => {
-			CustomWelcomePagePanel.createOrShow(context.extensionUri);
+		vscode.commands.registerCommand('favorites-page.start', () => {
+			FavoritesPagePanel.createOrShow(context.extensionUri, context);
 		})
 	);
 	// TODO: Only if no directory loaded
 	if (vscode.workspace.workspaceFolders === undefined) {
-		CustomWelcomePagePanel.createOrShow(context.extensionUri);
+		FavoritesPagePanel.createOrShow(context.extensionUri, context);
 	}
 }
 
