@@ -76,10 +76,16 @@ class FavoritesPagePanel {
 				vscode.commands.executeCommand('vscode.openFolder', folderUri);
 				break;
 			case 'showNewFileEntries':
-				vscode.commands.executeCommand('favorites.showNewFileEntries');
+				vscode.commands.executeCommand('welcome.showNewFileEntries');
 				break;
 			case 'topLevelOpenMac':
 				vscode.commands.executeCommand('workbench.action.files.openFile');
+				break;
+			case 'topLevelGitClone':
+				vscode.commands.executeCommand('git.clone');
+				break;
+			case 'topLevelShowWalkthroughs':
+				vscode.commands.executeCommand('welcome.showAllWalkthroughs');
 				break;
 		}
 	}
@@ -145,10 +151,17 @@ class FavoritesPagePanel {
 						return pathWithNamespace.replace(key, value);
 					}, project.path_with_namespace);
 	
+					// If name is the same as path, then name isn't really set in Gitlab, so
+					// do some fixup by replacing hypens and underscores with spaces, then title case.
+					const description = (project.name === project.path) 
+						? project.name.replace(/[-_]+/, " ")
+							.toLowerCase()
+							.replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase())
+						: project.name;
 
 					const folder: Folder = {
 						id: project.id.toString(),
-						description: project.name,
+						description: description,
 						location: gitLabSettings.localRootPath + location
 					};
 					folderGroup.folders.push(folder);
@@ -360,15 +373,16 @@ class FavoritesPagePanel {
 							</button>
 						</li>
 						<li>
-							<button class="button-link" x-dispatch="selectStartEntry:topLevelGitClone" title="Clone a remote repository to a local folder ">
+							<button class="button-link" x-dispatch="selectStartEntry:favorites.topLevelGitClone" title="Clone a remote repository to a local folder ">
 								<div class="codicon codicon-source-control icon-widget"></div>
 								<span>Clone Git Repository...</span>
 							</button>
 						</li>
 						<li>
-							<button class="button-link" x-dispatch="selectStartEntry:topLevelShowWalkthroughs" title="View a walkthrough on the editor or an extension ">
+							<button class="button-link" x-dispatch="selectStartEntry:favorites.topLevelShowWalkthroughs" title="View a walkthrough on the editor or an extension ">
 								<div class="codicon codicon-checklist icon-widget"></div>
-								<span>Open a Walkthrough...</span></button>
+								<span>Open a Walkthrough...</span>
+							</button>
 						</li>
 					</ul>
 				</div>

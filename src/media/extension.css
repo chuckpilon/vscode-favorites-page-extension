@@ -1,0 +1,144 @@
+body {
+	font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
+	/* margin: 0;
+	padding: 10px 20px;
+	text-align: center; */
+	color: var(--vscode-foreground);
+	background-color: var(--vscode-editor-background);
+}
+
+.favorites-page {
+    font-size: 13px;
+}
+
+.favorites-page-container {
+    font-weight: 400;
+    margin-top: 0;
+    margin-bottom: 5px;
+    line-height: normal;
+}
+
+.favorites-page-container .favorites-page-slide {
+    overflow: hidden;
+    transition: left .25s, opacity .25s;
+    padding: 12px 24px;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    box-sizing: border-box;
+    left: 0;
+    top: 0;
+}
+
+.favorites-page-container .favorites-page-categories-container {
+    grid-template-rows: auto minmax(min-content,auto) min-content;
+
+    display: grid;
+    height: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    grid-template-rows: 25% minmax(min-content,auto) min-content;
+    grid-template-columns: 1fr 6fr 1fr 6fr 1fr;
+    grid-template-areas:
+        ". header header header ."
+        ". left-column . right-column ."
+        ". footer footer footer .";    
+}
+
+.favorites-page-container .header {
+    grid-area: header;
+    align-self: end;
+    padding-bottom: 12px;
+}
+
+.favorites-page-container .header h1 {
+    padding: 5px 0 0;
+    margin: 0;
+    border: none;
+    font-weight: 400;
+    font-size: 2.7em;
+    white-space: nowrap;    
+}
+
+.favorites-page-container .header .description {
+    color: #717171;
+    line-height: 1.4em;
+}
+
+.favorites-page-container .header .subtitle {
+    margin-top: 0.6em;
+    font-size: 2em;
+    display: block;
+}
+
+.favorites-page-categories-container .categories-column {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.favorites-page-categories-container .categories-column-left {
+    grid-area: left-column;
+}
+
+.favorites-page-categories-container .categories-column-right {
+    grid-area: right-column;
+}
+
+.start-container h2 {
+    padding-bottom: 8px;
+}
+
+.start-container h3 {
+    padding: 4px 0;
+}
+
+.favorites-page-container ul {
+    list-style: none;
+    margin: 0;
+    line-height: 24px;
+    padding-left: 0;
+    overflow: hidden;
+}
+
+.favorites-page-container li {
+    list-style: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;    
+}
+
+.favorites-page-container button {
+    color: #006ab1;
+    text-align: left;
+    font-size: 13px;
+    font-family: inherit;    
+}
+
+.favorites-page-container .button-link {
+    padding: 0;
+    background: transparent;
+    margin: 2px;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: max-content;
+}
+
+.favorites-page-container path {
+    padding-left: 1em;
+}
+
+.favorites-page-container .footer {
+    grid-area: footer;
+    justify-self: center;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;    
+}
+
+.icon-widget {
+    font-size: 20px;
+    padding-right: 8px;
+    position: relative;
+    top: 3px;
+}
