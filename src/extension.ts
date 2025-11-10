@@ -151,14 +151,18 @@ class FavoritesPagePanel {
 						return pathWithNamespace.replace(key, value);
 					}, project.path_with_namespace);
 	
-					// If name is the same as path, then name isn't really set in Gitlab, so
+					// If project.name is in the description dictionary, apply that mapping. Otherwise, 
+					// if name is the same as path, then name isn't really set in Gitlab, so
 					// do some fixup by replacing hypens and underscores with spaces, then title case.
-					const description = (project.name === project.path) 
-						? project.name.replace(/[-_]+/, " ")
-							.toLowerCase()
-							.replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase())
-						: project.name;
 
+					const description = (project.name in gitLabSettings.renameProjects)
+						? gitLabSettings.renameProjects[project.name]
+						: ((project.name === project.path) 
+							? project.name.replace(/[-_]+/, " ")
+								.toLowerCase()
+								.replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase())
+							: project.name);
+					
 					const folder: Folder = {
 						id: project.id.toString(),
 						description: description,

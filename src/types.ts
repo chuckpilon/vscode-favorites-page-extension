@@ -17,6 +17,7 @@ type GitLabSettings = {
 	localRootPath: string;
 	renameGroups: Record<string, string>;
 	renamePaths: Record<string, string>;
+	renameProjects: Record<string, string>;
 };
 
 type Settings = {
